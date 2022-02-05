@@ -26,10 +26,8 @@ def read_definition(in_def):
     # テーブル情報を得る
     result = []
     cur_line = in_def['start_line']
-    table_sep = '.'
-    if 'table_connection_str' in in_def['columns'].keys():
-        table_sep = in_def['columns']['table_connection_str']
-    table_name = get_table_name(sh, cur_line, table_name_columns, table_sep)
+    table_name = get_table_name(sh, cur_line, table_name_columns)
+    table_cmnt = sh[def_col['table_comment']+str(cur_line)].value
     cur_line += 1
     while(table_name is not None):  # テーブル単位のループ
         #print(table_name)
@@ -38,9 +36,7 @@ def read_definition(in_def):
         # テーブル名
         tab['name'] = table_name
         # コメント
-        tab['comment'] = sh[
-            def_col['table_comment']+str(cur_line)
-        ].value
+        tab['comment'] = table_cmnt
 
         # 列名
         tab['columns'] = []
@@ -88,22 +84,24 @@ def read_definition(in_def):
         result.append(tab)
 
         # 次のテーブル
-        table_name = get_table_name(sh, cur_line, table_name_columns, table_sep)
+        table_name = get_table_name(sh, cur_line, table_name_columns)
+        table_cmnt = sh[def_col['table_comment']+str(cur_line)].value
         cur_line += 1
     return result
 
 
-def get_table_name(sh, line_num, table_name_columns, sep_str='.'):
-    table_name = ''
+def get_table_name(sh, line_num, table_name_columns):
+    """テーブル指定の列から抜き出して、1個でも配列にして返す
+    """
+    table_name = []
     for c in table_name_columns:
         tmp = sh[f'{c}{line_num}'].value
         if tmp is not None:
-            table_name += tmp + sep_str
-    # 最後のsep_strを削除して返す
-    table_name = table_name[:(-1)*len(sep_str)]
+            table_name.append(tmp)
     if len(table_name)==0:
         return None
     return table_name
+
 
 def get_type_info(_s):
     """型の文字列から、当モジュール内で使用する型(ColumnType)へ変換しつつ
