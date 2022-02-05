@@ -3,6 +3,8 @@ from openpyxl import load_workbook
 def read_definition(in_def):
     """ 指示されたExcelの読み方を元に読んで、
     あとで使いやすい形にして返す
+
+    (イテレーターを使って書き直したい.後から知った.)
     """
 
     wb = load_workbook(in_def['file'], read_only=True)
@@ -27,7 +29,7 @@ def read_definition(in_def):
     table_name = get_table_name(sh, cur_line, table_name_columns, table_sep)
     cur_line += 1
     while(table_name is not None):  # テーブル単位のループ
-        print(table_name)
+        #print(table_name)
         tab = {}
 
         # テーブル名
@@ -43,7 +45,7 @@ def read_definition(in_def):
             def_col['column_name']+str(cur_line)
         ].value
         while(column_name is not None):
-            print(column_name)
+            #print(column_name)
             col = {}
 
             # 列名
