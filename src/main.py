@@ -1,5 +1,5 @@
 
-from table_def import read_definition
+from table_def import read_definition, write_for_mysql
 
 def main():
     """Excelファイルからテーブル定義書を読んで、CreateTable文を作る
@@ -10,8 +10,7 @@ def main():
         'sheet': 'DB項目定義',
         'start_line': 3,        # Excelの1行目=1, 2行目=2, ...
         'columns': {    # Excelの列名A,B,...で指定する
-            'table_name': ['B','C'],    # 複数指定の場合は、table_connection_str(default:".")で接続する
-            'table_connection_str': '.',
+            'table_name': ['B','C'],    # 複数、単数も可
             'table_comment': 'D',
             'column_name': 'E',
             'column_comment': 'F',
@@ -31,7 +30,7 @@ def main():
     #print(table_def_info)
     
     # SQLファイルを生成
-    #write_for_mysql(mysql_dir)
+    write_for_mysql(table_def_info, mysql_dir)
 
     return None
 
