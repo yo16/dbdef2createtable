@@ -26,7 +26,7 @@ def read_definition(in_def):
         table_sep = in_def['columns']['table_connection_str']
     table_name = get_table_name(sh, cur_line, table_name_columns, table_sep)
     cur_line += 1
-    while(table_name!=None):  # テーブル単位のループ
+    while(table_name is not None):  # テーブル単位のループ
         print(table_name)
         tab = {}
 
@@ -42,7 +42,7 @@ def read_definition(in_def):
         column_name = sh[
             def_col['column_name']+str(cur_line)
         ].value
-        while(column_name!=None):
+        while(column_name is not None):
             print(column_name)
             col = {}
 
