@@ -1,4 +1,7 @@
 from openpyxl import load_workbook
+import re
+
+from . import ColumnType
 
 def read_definition(in_def):
     """ 指示されたExcelの読み方を元に読んで、
@@ -55,17 +58,19 @@ def read_definition(in_def):
                 def_col['column_comment']+str(cur_line)
             ].value
             # 型
-            col['type'] = sh[
+            typ = sh[
                 def_col['type']+str(cur_line)
             ].value
+            col['type'], col['type_size'] = \
+                get_type_info(typ)
             # NotNull
-            col['nn'] = sh[
+            col['nn'] = True if sh[
                 def_col['not_null']+str(cur_line)
-            ].value
+            ].value == 'Y' else False
             # PK
-            col['pk'] = sh[
+            col['pk'] = True if sh[
                 def_col['primary_key']+str(cur_line)
-            ].value
+            ].value == 'Y' else False
             # 初期値
             col['default'] = sh[
                 def_col['default_value']+str(cur_line)
@@ -99,3 +104,35 @@ def get_table_name(sh, line_num, table_name_columns, sep_str='.'):
     if len(table_name)==0:
         return None
     return table_name
+
+def get_type_info(_s):
+    """型の文字列から、当モジュール内で使用する型(ColumnType)へ変換しつつ
+    サイズも分ける。
+    新しいものが増えたら、ここと__init__.pyへ追加する。
+    """
+    s = _s.lower()
+
+    ret_type = None
+    ret_type_len = None
+
+    if s.startswith('string') or \
+        s.startswith('varchar') or \
+        s.startswith('char'):
+        ret_type = ColumnType.STRING
+    elif s.startswith('int'):
+        ret_type = ColumnType.INT
+    elif s.startswith('double') or \
+        s.startswith('float') or \
+        s.startswith('number'):
+        ret_type = ColumnType.DOUBLE
+    elif s=='date':
+        ret_type = ColumnType.DATE
+    elif s=='datetime':
+        ret_type = ColumnType.DATETIME
+
+    # 丸カッコでサイズが指定されてたら取得
+    m = re.match(r'^.*\(([^\)]+)\)', s)
+    if m:
+        ret_type_len = int(m.groups()[0])
+    
+    return (ret_type, ret_type_len)
