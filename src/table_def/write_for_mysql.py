@@ -31,7 +31,7 @@ def write_for_mysql_tab(tab_info, to_dir, table_sep='_'):
             type_str = get_type_str(typ, typ_sz)
             nn = 'NOT NULL' if c['nn'] else ''
             cmnt = 'COMMENT \'' + c['comment'] + '\'' if c['comment'] else ''
-            dflt = 'DEFAULT \'' + c['default'] if c['default'] else ''
+            dflt = get_default_value(c['default'], typ)
             # 列
             f.write(f'\t{sep}{nm} {type_str} {nn} {dflt} {cmnt}\n')
 
@@ -73,5 +73,17 @@ def get_type_str(typ, typ_sz):
     
     if typ_sz:
         ret += f'({typ_sz})'
+    
+    return ret
+
+def get_default_value(val, typ):
+    if val is None:
+        return ''
+    
+    ret = 'DEFAULT '
+    if typ==ColumnType.STRING:
+        ret += '\'' + val + '\''
+    else:
+        ret += val
     
     return ret
