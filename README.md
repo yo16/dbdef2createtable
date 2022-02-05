@@ -1,5 +1,6 @@
 # dbdef2createtable
 - テーブル定義書(Excel)からCreateTable文を作る
+- BigQuery用のCreateTable文を作ってたけど、MySQL用に書き換えなくちゃいけなくなって、もうそういうことやりたくなかったため作成。
 
 ## Usage
 - read_definition()で読んで、write～()で書く。
