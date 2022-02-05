@@ -6,6 +6,7 @@ class ColumnType(Enum):
     STRING = 3
     DATE = 4
     DATETIME = 5
+    BOOL = 6
 
 from .read_definition import read_definition
 from .write_for_mysql import write_for_mysql

@@ -70,6 +70,8 @@ def get_type_str(typ, typ_sz):
         ret = 'DATE'
     elif typ==ColumnType.DATETIME:
         ret = 'DATETIME'
+    elif typ==ColumnType.BOOL:
+        ret = 'BOOLEAN'     # tinyint(1)として作られるけど、True, Falseが使える
     
     if typ_sz:
         ret += f'({typ_sz})'

@@ -127,6 +127,10 @@ def get_type_info(_s):
         ret_type = ColumnType.DATE
     elif s=='datetime':
         ret_type = ColumnType.DATETIME
+    elif s.startswith('bool'):
+        ret_type = ColumnType.BOOL
+    else:
+        assert False, f'Unknown type!!: {s}'
 
     # 丸カッコでサイズが指定されてたら取得
     m = re.match(r'^.*\(([^\)]+)\)', s)
